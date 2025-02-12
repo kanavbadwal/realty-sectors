@@ -1,12 +1,14 @@
 import "./index.css";
-import Pic1 from "./images/Pic1.jpg";
-import Pic2 from "./images/Pic2.jpg";
-import Pic3 from "./images/Pic3.jpg";
-import Pic4 from "./images/Pic4.jpg";
-import ScrollAnimation from "./components/ScrollAnimation";
+import Pic1 from "./assets/images/Pic1.jpg";
+import Pic2 from "./assets/images/Pic2.jpg";
+import Pic3 from "./assets/images/Pic3.jpg";
+import Pic4 from "./assets/images/Pic4.jpg";
+import ScrollAnimation from "@/components/ScrollAnimation";
 import { useEffect, useState } from "react";
-import ContactModal from "./components/ContactModal";
+import ContactModal from "@/components/ContactModal";
 import "./App.css";
+import "./index.css";
+import React from "react";
 
 function App() {
   const imageLabel = (title) => {
@@ -27,14 +29,16 @@ function App() {
       interval = setInterval(() => {
         handleDotClick(currentSlide === 3 ? 0 : currentSlide + 1);
       }, 4000);
-
       setIntervalId(interval);
     }
 
     return () => {
-      if (interval) clearInterval(interval);
+      if (intervalId) {
+        clearInterval(intervalId);
+        setIntervalId(null);
+      }
     };
-  }, [currentSlide]);
+  }, [currentSlide, isModalOpen, intervalId]);
 
   useEffect(() => {
     if (isModalOpen) {
