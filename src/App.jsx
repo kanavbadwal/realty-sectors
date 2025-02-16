@@ -20,43 +20,39 @@ function App() {
   };
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [intervalId, setIntervalId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [slideInterval, setSlideInterval] = useState(null);
 
   useEffect(() => {
+    // Handle modal overflow
+    document.body.style.overflow = isModalOpen ? "hidden" : "unset";
+
+    // Handle slide interval
     let interval;
     if (!isModalOpen) {
       interval = setInterval(() => {
-        handleDotClick(currentSlide === 3 ? 0 : currentSlide + 1);
+        setCurrentSlide((current) => (current === 3 ? 0 : current + 1));
       }, 4000);
-      setIntervalId(interval);
+      setSlideInterval(interval);
     }
 
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-        setIntervalId(null);
-      }
-    };
-  }, [currentSlide, isModalOpen, intervalId]);
-
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
+    // Cleanup function
     return () => {
       document.body.style.overflow = "unset";
+      if (interval) clearInterval(interval);
     };
   }, [isModalOpen]);
 
   const handleDotClick = (index) => {
-    if (intervalId) {
-      clearInterval(intervalId);
-    }
     setCurrentSlide(index);
+    // Reset the interval
+    if (slideInterval) {
+      clearInterval(slideInterval);
+    }
+    const newInterval = setInterval(() => {
+      setCurrentSlide((current) => (current === 3 ? 0 : current + 1));
+    }, 4000);
+    setSlideInterval(newInterval);
   };
 
   return (
@@ -93,7 +89,7 @@ function App() {
                       alt={`Image ${index + 1}`}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                     />
-                    {imageLabel(`P. ${index + 1}`)}
+                    {/* {imageLabel(`P. ${index + 1}`)} */}
                   </div>
                 ))}
               </div>
